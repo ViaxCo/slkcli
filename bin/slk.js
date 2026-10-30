@@ -10,9 +10,12 @@ import { setWorkspace } from "../src/auth.js";
 
 const args = process.argv.slice(2);
 
-const workspaceIdx = args.indexOf("--workspace");
+const workspaceIdx = args.findIndex((a) => a === "--workspace" || a.startsWith("--workspace="));
 if (workspaceIdx > -1) {
-  const [, name] = args.splice(workspaceIdx, 2);
+  const [flag] = args.splice(workspaceIdx, 1);
+  const name = flag.startsWith("--workspace=")
+    ? flag.slice("--workspace=".length)
+    : args.splice(workspaceIdx, 1)[0];
   if (!name) { console.error("Usage: slk <command> --workspace <name|domain|team_id>"); process.exit(1); }
   setWorkspace(name);
 }
