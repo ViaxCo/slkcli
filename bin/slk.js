@@ -132,10 +132,13 @@ async function main() {
         await cmd.upload(args[1], args[2], args.slice(3).join(" "));
         break;
 
-      case "search":
+      case "search": {
         if (!args[1]) { console.error("Usage: slk search <query> [count]"); process.exit(1); }
-        await cmd.search(args.slice(1).join(" "), parseInt(args[args.length - 1]) || 20);
+        const words = args.slice(1);
+        const count = words.length > 1 && /^\d+$/.test(words.at(-1)) ? parseInt(words.pop()) : 20;
+        await cmd.search(words.join(" "), count);
         break;
+      }
 
       case "thread":
       case "t":
