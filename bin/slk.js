@@ -6,11 +6,43 @@
 
 import * as cmd from "../src/commands.js";
 import * as drafts from "../src/drafts.js";
-import { setWorkspace } from "../src/auth.js";
+import { spawn } from "child_process";
+import { setWorkspace, signedInWorkspaces } from "../src/auth.js";
 
 const args = process.argv.slice(2);
 
+const READ_COMMANDS = new Set([
+  "auth", "channels", "ch", "dms", "dm", "users", "u", "read", "r", "search",
+  "thread", "t", "activity", "a", "unread", "ur", "starred", "star", "saved", "sv",
+  "pins", "pin", "drafts",
+]);
+const WRITE_COMMANDS = new Set(["send", "s", "upload", "react", "draft"]);
+
+function runInWorkspace(domain) {
+  return new Promise((resolve) => {
+    const child = spawn(process.execPath, [process.argv[1], ...args, "--workspace", domain]);
+    let output = "";
+    child.stdout.on("data", (d) => { output += d; });
+    child.stderr.on("data", (d) => { output += d; });
+    child.on("close", (code) => resolve({ output, code }));
+  });
+}
+
+async function runInAllWorkspaces(workspaces) {
+  const results = await Promise.all(workspaces.map((w) => runInWorkspace(w.domain)));
+  results.forEach(({ output, code }, i) => {
+    console.log(`\n━━ ${workspaces[i].name} (--workspace ${workspaces[i].domain})\n`);
+    process.stdout.write(output);
+    if (code) process.exitCode = 1;
+  });
+}
+
 const workspaceIdx = args.findIndex((a) => a === "--workspace" || a.startsWith("--workspace="));
+const workspaces = workspaceIdx === -1 ? signedInWorkspaces() : [];
+if (workspaces.length > 1 && WRITE_COMMANDS.has(args[0])) {
+  console.error(`Pick a workspace with --workspace: ${workspaces.map((w) => w.domain).join(", ")}`);
+  process.exit(1);
+}
 if (workspaceIdx > -1) {
   const [flag] = args.splice(workspaceIdx, 1);
   const name = flag.startsWith("--workspace=")
@@ -54,6 +86,8 @@ Drafts (synced to Slack UI):
 
 Settings:
   --workspace <name>                      Use this workspace (name, domain, or team ID)
+                                          Without it: reads run in every signed-in workspace,
+                                          writes ask you to pick one
   --ts                                    Show raw Slack timestamps (for thread commands)
   --threads                               Auto-expand threads when reading
   --from YYYY-MM-DD                       Read messages from this date
@@ -235,4 +269,8 @@ async function main() {
   }
 }
 
-main();
+if (workspaces.length > 1 && READ_COMMANDS.has(command)) {
+  runInAllWorkspaces(workspaces);
+} else {
+  main();
+}

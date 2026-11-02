@@ -102,7 +102,7 @@ slk react general 1234567890.123456 thumbsup
 
 | Flag | Description |
 |------|-------------|
-| `--workspace <name>` | Use this workspace instead of the default. Accepts the workspace name, domain (`acme` in `acme.slack.com`), or team ID |
+| `--workspace <name>` | Use only this workspace. Accepts the workspace name, domain (`acme` in `acme.slack.com`), or team ID. Without it, if you are signed in to more than one workspace, read commands run in all of them and show each result under its workspace name, and write commands (`send`, `upload`, `react`, `draft`) ask you to pick one |
 | `--ts` | Show raw Slack timestamps (useful for getting ts to read threads) |
 | `--threads` | Auto-expand all threads when reading messages |
 | `--from YYYY-MM-DD` | Read messages from this date onwards |

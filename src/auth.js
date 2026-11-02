@@ -46,6 +46,15 @@ export function setWorkspace(name) {
   workspace = name.toLowerCase();
 }
 
+export function signedInWorkspaces() {
+  try {
+    const state = JSON.parse(readFileSync(join(SLACK_DIR, "storage", "root-state.json"), "utf-8"));
+    return Object.values(state.workspaces ?? {}).map(({ name, domain }) => ({ name, domain }));
+  } catch {
+    return [];
+  }
+}
+
 function tokenCachePath() {
   const suffix = workspace ? `-${encodeURIComponent(workspace)}` : "";
   return join(CACHE_DIR, `token-cache${suffix}.json`);
