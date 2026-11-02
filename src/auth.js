@@ -82,7 +82,7 @@ function getKeychainKey() {
 }
 
 function decryptCookie() {
-  const tmpDb = join(tmpdir(), `slk_cookies_${Date.now()}.db`);
+  const tmpDb = join(tmpdir(), `slk_cookies_${process.pid}_${Date.now()}.db`);
   copyFileSync(COOKIES_DB, tmpDb);
 
   try {
@@ -104,7 +104,7 @@ function decryptCookie() {
     const iv = Buffer.alloc(16, " ");
 
     // Decrypt via openssl using spawnSync for clean binary output
-    const tmpEnc = join(tmpdir(), `slk_enc_${Date.now()}.bin`);
+    const tmpEnc = join(tmpdir(), `slk_enc_${process.pid}_${Date.now()}.bin`);
     writeFileSync(tmpEnc, data);
 
     const result = spawnSync("openssl", [
