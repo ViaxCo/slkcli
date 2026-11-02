@@ -8,14 +8,16 @@ Built for AI agents and terminal workflows. Zero dependencies. Zero setup.
 
 ## Install
 
+This is a fork of [therohitdas/slkcli](https://github.com/therohitdas/slkcli) with extra fixes. Install it from GitHub:
+
 ```bash
-npm install -g slkcli
+npm install -g github:ViaxCo/slkcli
 ```
 
 One-shot (no install):
 
 ```bash
-npx slkcli auth
+npx github:ViaxCo/slkcli auth
 ```
 
 **Requirements:** macOS, Slack desktop app (installed and logged in), Node.js 18+.
@@ -29,7 +31,7 @@ Add to your AI agent (Claude Code, Codex, Moltbot, etc.):
 clawdhub install slack-personal
 
 # skills.sh
-npx skills add therohitdas/slkcli
+npx skills add ViaxCo/slkcli
 ```
 
 Browse on [ClawdHub](https://www.clawhub.ai/therohitdas/slack-personal).
