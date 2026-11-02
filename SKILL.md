@@ -14,7 +14,7 @@ Session-based Slack CLI for macOS. Auto-authenticates from the Slack desktop app
 ```bash
 # Auth
 slk auth                              # Test authentication, show user/team
-slk auth --workspace acme             # Any command: use another workspace (name, domain, or team ID)
+slk auth --workspace acme             # Any command: use only this workspace (name, domain, or team ID)
 
 # Read
 slk channels                          # List channels (alias: ch)
@@ -46,6 +46,16 @@ slk draft user <user_id> <message>    # Draft a DM
 slk drafts                            # List active drafts
 slk draft drop <draft_id>             # Delete a draft
 ```
+
+## Workspaces
+
+Do not give one workspace priority. Without `--workspace`, read commands run in every signed-in workspace at once and print each result under a `━━ <Name> (--workspace <domain>)` header. Write commands (`send`, `upload`, `react`, `draft`) refuse to run until you pass `--workspace`.
+
+- To read or search, run the command without `--workspace`.
+- Use the context (people, channels, projects) to find the workspace the user means. After that, pass that workspace's `--workspace <domain>` for follow-up commands such as `thread`.
+- Ask the user only when the context does not show the workspace.
+- Say the workspace when you report a result, for example "Velio #social".
+- Before you write, make sure of the workspace. If the user did not name it, confirm it with them.
 
 Channel accepts name (`general`), ID (`C08A8AQ2AFP`), `@username` for DMs, or user ID (`U07RQTFCLUC`).
 
