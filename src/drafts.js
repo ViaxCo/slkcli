@@ -153,12 +153,28 @@ async function createDraft(channelId, threadTs, userIds, text) {
         elements: [
           {
             type: "rich_text_section",
-            elements: [{ type: "text", text }],
+            elements: richTextElements(text),
           },
         ],
       },
     ],
   });
+}
+
+const TOKEN = /<@([UW][A-Z0-9]+)>|<(https?:\/\/[^|>]+)(?:\|([^>]*))?>|(https?:\/\/[^\s<>]*[^\s<>.,;:!?)\]])/g;
+
+export function richTextElements(text) {
+  const elements = [];
+  let last = 0;
+  for (const match of text.matchAll(TOKEN)) {
+    if (match.index > last) elements.push({ type: "text", text: text.slice(last, match.index) });
+    const [, userId, wrappedUrl, label, bareUrl] = match;
+    if (userId) elements.push({ type: "user", user_id: userId });
+    else elements.push({ type: "link", url: wrappedUrl || bareUrl, ...(label && { text: label }) });
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) elements.push({ type: "text", text: text.slice(last) });
+  return elements;
 }
 
 function extractText(blocks) {
@@ -170,6 +186,7 @@ function extractText(blocks) {
         if (item.type === "text") parts.push(item.text);
         if (item.type === "emoji") parts.push(`:${item.name}:`);
         if (item.type === "link") parts.push(item.url);
+        if (item.type === "user") parts.push(`<@${item.user_id}>`);
       }
     }
   }
