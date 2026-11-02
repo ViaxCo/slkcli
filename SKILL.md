@@ -49,6 +49,8 @@ slk draft drop <draft_id>             # Delete a draft
 
 Channel accepts name (`general`), ID (`C08A8AQ2AFP`), `@username` for DMs, or user ID (`U07RQTFCLUC`).
 
+In draft text, `<@USER_ID>` becomes a real mention and URLs become links.
+
 ## Auth
 
 Automatic — extracts session token from Slack desktop app's LevelDB + decrypts cookie from macOS Keychain.

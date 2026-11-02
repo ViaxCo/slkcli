@@ -129,6 +129,8 @@ Drafts sync to Slack — they appear in the Slack editor UI.
 | `slk drafts` | List all active drafts |
 | `slk draft drop <draft_id>` | Delete a draft |
 
+In draft text, `<@USER_ID>` becomes a real mention and URLs become links.
+
 ### Channel resolution
 
 Channels can be specified by **name** or **ID** in any command:
