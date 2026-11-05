@@ -16,7 +16,7 @@ const READ_COMMANDS = new Set([
   "thread", "t", "activity", "a", "unread", "ur", "starred", "star", "saved", "sv",
   "pins", "pin", "drafts",
 ]);
-const WRITE_COMMANDS = new Set(["send", "s", "upload", "react", "draft"]);
+const WRITE_COMMANDS = new Set(["send", "s", "reply", "upload", "react", "draft"]);
 
 function runInWorkspace(domain) {
   return new Promise((resolve) => {
@@ -67,6 +67,7 @@ Commands:
   slk users             (u)               List workspace users with statuses
   slk read <ch> [n]     (r)               Read last n messages (default: 20)
   slk send <ch> <msg>   (s)               Send a message
+  slk reply <ch> <ts> <msg>               Reply in a thread
   slk upload <ch> <file> [caption]         Upload and share a file
   slk search <query> [n]                  Search messages across workspace
   slk thread <ch> <ts> [n]  (t)           Read thread replies (default: 50)
@@ -106,6 +107,7 @@ Examples:
   slk upload @andrej screenshot.png "Here it is"  Upload a file in a DM
   slk search "deploy failed" 10           Search with limit
   slk thread general 1706000000.000000    Read a thread
+  slk reply general 1706000000.000000 "on it"  Reply in that thread
   slk react @andrej 1706000000.000000 eyes  React to DM message
   slk draft general "PR summary..."       Save draft in Slack UI
   slk dms                                 List all DM conversations
@@ -159,6 +161,11 @@ async function main() {
       case "s":
         if (!args[1] || !args[2]) { console.error("Usage: slk send <channel> <message>"); process.exit(1); }
         await cmd.send(args[1], args.slice(2).join(" "));
+        break;
+
+      case "reply":
+        if (!args[1] || !args[2] || !args[3]) { console.error("Usage: slk reply <channel> <ts> <message>"); process.exit(1); }
+        await cmd.send(args[1], args.slice(3).join(" "), args[2]);
         break;
 
       case "upload":

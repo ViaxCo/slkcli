@@ -174,11 +174,12 @@ export async function read(channelRef, count = 20, options = {}) {
   }
 }
 
-export async function send(channelRef, text) {
+export async function send(channelRef, text, threadTs) {
   const channel = await resolveChannel(channelRef);
-  const data = await slackApi("chat.postMessage", { channel, text });
+  const data = await slackApi("chat.postMessage", { channel, text, thread_ts: threadTs });
   if (data.ok) {
-    console.log(`✅ Sent to ${channelRef} (ts: ${data.ts})`);
+    const where = threadTs ? `${channelRef} thread ${threadTs}` : channelRef;
+    console.log(`✅ Sent to ${where} (ts: ${data.ts})`);
   } else {
     console.error(`❌ Failed: ${data.error}`);
     process.exit(1);

@@ -36,6 +36,7 @@ slk pins <channel>                    # Pinned items in a channel (alias: pin)
 
 # Write
 slk send <channel> <message>          # Send a message (alias: s)
+slk reply <channel> <ts> <message>    # Reply in a thread
 slk upload <channel> <file> [caption] # Upload and share a file
 slk react <channel> <ts> <emoji>      # React to a message
 
@@ -49,7 +50,7 @@ slk draft drop <draft_id>             # Delete a draft
 
 ## Workspaces
 
-Do not give one workspace priority. Without `--workspace`, read commands run in every signed-in workspace at once and print each result under a `━━ <Name> (--workspace <domain>)` header. Write commands (`send`, `upload`, `react`, `draft`) refuse to run until you pass `--workspace`.
+Do not give one workspace priority. Without `--workspace`, read commands run in every signed-in workspace at once and print each result under a `━━ <Name> (--workspace <domain>)` header. Write commands (`send`, `reply`, `upload`, `react`, `draft`) refuse to run until you pass `--workspace`.
 
 - To read or search, run the command without `--workspace`.
 - Use the context (people, channels, projects) to find the workspace the user means. After that, pass that workspace's `--workspace <domain>` for follow-up commands such as `thread`.
